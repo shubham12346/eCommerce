@@ -1,8 +1,16 @@
 import React, { useState } from "react";
 import ProductList from "./component/ProductList";
 import AddProductButton from "./component/AddProductButton";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
+
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import { arrayMove } from "@dnd-kit/sortable";
+
 const App = () => {
   const [products, setProducts] = useState([
     {
@@ -82,23 +90,94 @@ const App = () => {
     );
     setProducts(updatedProducts);
   };
+  const sensors = useSensors(useSensor(PointerSensor));
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      setProducts((prevProducts) => {
+        const oldIndex = prevProducts.findIndex(
+          (item) => item.id === active.id
+        );
+        const newIndex = prevProducts.findIndex((item) => item.id === over.id);
+
+        return arrayMove(prevProducts, oldIndex, newIndex);
+      });
+    }
+  };
+
+  const handleReorderVariants = (productId, activeId, overId) => {
+    setProducts((prevProducts) =>
+      prevProducts.map((product) => {
+        if (product.id === productId) {
+          const variants = [...product.variants];
+          const oldIndex = variants.findIndex((v) => v.id === activeId);
+          const newIndex = variants.findIndex((v) => v.id === overId);
+          const [movedVariant] = variants.splice(oldIndex, 1);
+          variants.splice(newIndex, 0, movedVariant);
+          return { ...product, variants };
+        }
+        return product;
+      })
+    );
+  };
+  const handleReorderVariants = (productId, activeId, overId) => {
+    setProducts((prevProducts) =>
+      prevProducts.map((product) => {
+        if (product.id === productId) {
+          const variants = [...product.variants];
+          const oldIndex = variants.findIndex((v) => v.id === activeId);
+          const newIndex = variants.findIndex((v) => v.id === overId);
+          const [movedVariant] = variants.splice(oldIndex, 1);
+          variants.splice(newIndex, 0, movedVariant);
+          return { ...product, variants };
+        }
+        return product;
+      })
+    );
+  };
+
+  const handleDragEnd = ({ active, over }) => {
+    if (!over) return;
+
+    const activeId = active.id;
+    const overId = over.id;
+
+    // Check if the drag was inside a variant
+    const draggedProduct = products.find((product) =>
+      product.variants.some((variant) => variant.id === activeId)
+    );
+
+    if (draggedProduct) {
+      handleReorderVariants(draggedProduct.id, activeId, overId);
+    }
+  };
 
   return (
     <div className="flex justify-center items-center border-2 inline-block border-gray-500 py-10 w-1/2 m-auto">
       <div>
         <h1 className="text-sm">E-Commerce Product List</h1>
-        <DndProvider backend={HTML5Backend}>
-          <ProductList products={products} onRemove={handleOnRemove} />
-        </DndProvider>
-        <div className="flex justify-end">
-          <AddProductButton
-            onAdd={handleAddProduct}
-            btnText={"Add Product"}
-            classNames={
-              " px-28 py-1 border-2 border-green-800 font-normal text-green-800  text-sm "
-            }
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <ProductList
+            products={products}
+            onRemove={handleOnRemove}
+            handleReorderVariants={handleReorderVariants}
           />
-        </div>
+          <div className="flex justify-end">
+            <AddProductButton
+              onAdd={handleAddProduct}
+              btnText={"Add Product"}
+              classNames={
+                " px-28 py-1 border-2 border-green-800 font-normal text-green-800  text-sm "
+              }
+            />
+          </div>
+        </DndContext>
       </div>
     </div>
   );
