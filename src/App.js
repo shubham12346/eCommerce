@@ -92,19 +92,11 @@ const App = () => {
   };
   const sensors = useSensors(useSensor(PointerSensor));
 
-  const handleDragEnd = (event) => {
-    const { active, over } = event;
+  const handleReorderProducts = (activeId, overId) => {
+    const oldIndex = products.findIndex((product) => product.id === activeId);
+    const newIndex = products.findIndex((product) => product.id === overId);
 
-    if (active.id !== over.id) {
-      setProducts((prevProducts) => {
-        const oldIndex = prevProducts.findIndex(
-          (item) => item.id === active.id
-        );
-        const newIndex = prevProducts.findIndex((item) => item.id === over.id);
-
-        return arrayMove(prevProducts, oldIndex, newIndex);
-      });
-    }
+    setProducts((prevProducts) => arrayMove(prevProducts, oldIndex, newIndex));
   };
 
   const handleReorderVariants = (productId, activeId, overId) => {
@@ -114,24 +106,10 @@ const App = () => {
           const variants = [...product.variants];
           const oldIndex = variants.findIndex((v) => v.id === activeId);
           const newIndex = variants.findIndex((v) => v.id === overId);
-          const [movedVariant] = variants.splice(oldIndex, 1);
-          variants.splice(newIndex, 0, movedVariant);
-          return { ...product, variants };
-        }
-        return product;
-      })
-    );
-  };
-  const handleReorderVariants = (productId, activeId, overId) => {
-    setProducts((prevProducts) =>
-      prevProducts.map((product) => {
-        if (product.id === productId) {
-          const variants = [...product.variants];
-          const oldIndex = variants.findIndex((v) => v.id === activeId);
-          const newIndex = variants.findIndex((v) => v.id === overId);
-          const [movedVariant] = variants.splice(oldIndex, 1);
-          variants.splice(newIndex, 0, movedVariant);
-          return { ...product, variants };
+          return {
+            ...product,
+            variants: arrayMove(variants, oldIndex, newIndex),
+          };
         }
         return product;
       })
@@ -144,13 +122,19 @@ const App = () => {
     const activeId = active.id;
     const overId = over.id;
 
-    // Check if the drag was inside a variant
-    const draggedProduct = products.find((product) =>
+    // Check if the drag is for a product
+    if (products.some((product) => product.id === activeId)) {
+      handleReorderProducts(activeId, overId);
+      return;
+    }
+
+    // Check if the drag is for a variant
+    const parentProduct = products.find((product) =>
       product.variants.some((variant) => variant.id === activeId)
     );
 
-    if (draggedProduct) {
-      handleReorderVariants(draggedProduct.id, activeId, overId);
+    if (parentProduct) {
+      handleReorderVariants(parentProduct.id, activeId, overId);
     }
   };
 
