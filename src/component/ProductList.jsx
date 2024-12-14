@@ -9,10 +9,10 @@ const ItemType = "PRODUCT"; // Defining the type for drag-and-drop items
 
 const ProductList = ({
   products,
-  onReorder,
   onRemove,
   onAddDiscount,
   handleReorderVariants,
+  onEdit
 }) => {
   // Drag-and-drop logic
   const [showVariant, setShowVariant] = useState("");
@@ -37,6 +37,7 @@ const ProductList = ({
               setShowVariant={handleShowVariant}
               showVariant={showVariant}
               handleReorderVariants={handleReorderVariants}
+              onEdit ={onEdit}
             />
           </div>
         ))}

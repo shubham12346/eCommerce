@@ -16,7 +16,7 @@ const Product = ({
   totalProduct,
   showVariant,
   setShowVariant,
-  handleReorderVariants,
+  onEdit
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: product?.id });
@@ -39,7 +39,7 @@ const Product = ({
           <div className="w-96 flex items-center">
             <h3 className="text-sm px-1">{product?.title}</h3>
           </div>
-          <div className="cursor-pointer text-sm">Edit</div>
+          <div className="cursor-pointer text-sm" onClick={()=> onEdit(product?.id)}>Edit</div>
         </div>
 
         <button

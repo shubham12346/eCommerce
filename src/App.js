@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import ProductList from "./component/ProductList";
 import AddProductButton from "./component/AddProductButton";
+import BasicModal from "./component/BasicModal";
+import ModalList from "./component/ModalList";
 
 import {
   DndContext,
@@ -60,6 +62,8 @@ const App = () => {
       },
     },
   ]);
+  const [modalId ,setModalId] = useState()
+  const [isModalOpen,setIsModalOpen] = useState("")
 
   const handleAddProduct = () => {
     setProducts([
@@ -138,9 +142,13 @@ const App = () => {
     }
   };
 
+  const onEdit = (productId)=>{
+    setModalId(productId)
+  }
+
   return (
     <div className="flex justify-center items-center border-2 inline-block border-gray-500 py-10 w-1/2 m-auto">
-      <div>
+      <div className="w-full">
         <h1 className="text-sm">E-Commerce Product List</h1>
         <DndContext
           sensors={sensors}
@@ -151,6 +159,7 @@ const App = () => {
             products={products}
             onRemove={handleOnRemove}
             handleReorderVariants={handleReorderVariants}
+            onEdit ={onEdit}
           />
           <div className="flex justify-end">
             <AddProductButton
@@ -162,6 +171,9 @@ const App = () => {
             />
           </div>
         </DndContext>
+        <BasicModal  open={true} >
+          <ModalList/>
+        </BasicModal>
       </div>
     </div>
   );

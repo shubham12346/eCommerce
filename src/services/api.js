@@ -3,7 +3,7 @@ import axios from "axios";
 const api = axios.create({
   baseURL: "http://stageapi.monkcommerce.app",
   headers: {
-    "x-api-key": "",
+    "x-api-key": "72njgfa948d9aS7gs5",
   },
 });
 
