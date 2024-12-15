@@ -1,17 +1,26 @@
-import axios from "axios";
-
-const api = axios.create({
-  baseURL: "http://stageapi.monkcommerce.app",
-  headers: {
-    "x-api-key": "72njgfa948d9aS7gs5",
-  },
-});
-
 export const fetchProducts = async (search, page, limit) => {
-  const res = await api.get(`/task/products/search`, {
-    params: { search, page, limit },
-  });
-  return res.data || eg;
+  try {
+    const response = await fetch(
+      `https://stageapi.monkcommerce.app/task/products/search?search=${search}&page=${page}&limit=${limit}`,
+      {
+        method: "GET",
+        headers: {
+          "x-api-key": "72njgfa948d9aS7gs5", // API key for authorization
+          "Content-Type": "application/json", // Optional, depending on API requirements
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json(); // Parse JSON response
+    return data || eg; // Return data or fallback
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return eg; // Fallback to mock data on error
+  }
 };
 
 export const eg = [

@@ -16,10 +16,10 @@ const Product = ({
   totalProduct,
   showVariant,
   setShowVariant,
-  onEdit
+  onEdit,
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: product?.id });
+    useSortable({ id: index });
 
   const style = {
     transition,
@@ -39,7 +39,9 @@ const Product = ({
           <div className="w-96 flex items-center">
             <h3 className="text-sm px-1">{product?.title}</h3>
           </div>
-          <div className="cursor-pointer text-sm" onClick={()=> onEdit(product?.id)}>Edit</div>
+          <div className="cursor-pointer text-sm" onClick={() => onEdit(index)}>
+            Edit
+          </div>
         </div>
 
         <button
@@ -49,7 +51,7 @@ const Product = ({
           Add Discount
         </button>
         {totalProduct > 1 && (
-          <button onClick={() => onRemove(product?.id)} className="m-1 p-1">
+          <button onClick={() => onRemove(index)} className="m-1 p-1">
             x
           </button>
         )}

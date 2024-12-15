@@ -12,12 +12,11 @@ const ProductList = ({
   onRemove,
   onAddDiscount,
   handleReorderVariants,
-  onEdit
+  onEdit,
 }) => {
   // Drag-and-drop logic
   const [showVariant, setShowVariant] = useState("");
 
-  console.log("product", products);
   if (!products) return null;
 
   const handleShowVariant = (id) => {
@@ -27,7 +26,7 @@ const ProductList = ({
     <div>
       <SortableContext items={products} strategy={verticalListSortingStrategy}>
         {products?.map((product, index) => (
-          <div key={product?.id} className="my-5">
+          <div key={index} className="my-5">
             <Product
               index={index}
               product={product}
@@ -37,7 +36,7 @@ const ProductList = ({
               setShowVariant={handleShowVariant}
               showVariant={showVariant}
               handleReorderVariants={handleReorderVariants}
-              onEdit ={onEdit}
+              onEdit={onEdit}
             />
           </div>
         ))}

@@ -14,83 +14,17 @@ import {
 import { arrayMove } from "@dnd-kit/sortable";
 
 const App = () => {
-  const [products, setProducts] = useState([
-    {
-      id: 77,
-      title: "Fog Linen Chambray Towel - Beige Stripe",
-      variants: [
-        {
-          id: 1,
-          product_id: 77,
-          title: "XS / Silver",
-          price: "49",
-        },
-        {
-          id: 2,
-          product_id: 77,
-          title: "S / Silver",
-          price: "49",
-        },
-        {
-          id: 3,
-          product_id: 77,
-          title: "M / Silver",
-          price: "49",
-        },
-      ],
-      image: {
-        id: 266,
-        product_id: 77,
-        src: "https://cdn11.bigcommerce.com/s-p1xcugzp89/products/77/images/266/foglinenbeigestripetowel1b.1647248662.386.513.jpg?c=1",
-      },
-    },
-    {
-      id: 80,
-      title: "Orbit Terrarium - Large",
-      variants: [
-        {
-          id: 64,
-          product_id: 80,
-          title: "Default Title",
-          price: "109",
-        },
-      ],
-      image: {
-        id: 272,
-        product_id: 80,
-        src: "https://cdn11.bigcommerce.com/s-p1xcugzp89/products/80/images/272/roundterrariumlarge.1647248662.386.513.jpg?c=1",
-      },
-    },
-  ]);
-  const [modalId ,setModalId] = useState()
-  const [isModalOpen,setIsModalOpen] = useState("")
+  const [products, setProducts] = useState([]);
+  const [modalId, setModalId] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleAddProduct = () => {
-    setProducts([
-      ...products,
-      {
-        id: Date.now(),
-        title: "Orbit Terrarium - Large",
-        variants: [
-          {
-            id: 64,
-            product_id: 80,
-            title: "Default Title",
-            price: "109",
-          },
-        ],
-        image: {
-          id: 272,
-          product_id: 80,
-          src: "https://cdn11.bigcommerce.com/s-p1xcugzp89/products/80/images/272/roundterrariumlarge.1647248662.386.513.jpg?c=1",
-        },
-      },
-    ]);
+    setProducts([...products, {}]);
   };
 
   const handleOnRemove = (productId) => {
     const updatedProducts = products.filter(
-      (product) => product.id !== productId
+      (product, index) => index !== productId
     );
     setProducts(updatedProducts);
   };
@@ -127,7 +61,7 @@ const App = () => {
     const overId = over.id;
 
     // Check if the drag is for a product
-    if (products.some((product) => product.id === activeId)) {
+    if (products.some((product, index) => product.id === activeId)) {
       handleReorderProducts(activeId, overId);
       return;
     }
@@ -142,9 +76,13 @@ const App = () => {
     }
   };
 
-  const onEdit = (productId)=>{
-    setModalId(productId)
-  }
+  const onEdit = (productId) => {
+    setModalId(productId);
+  };
+  const handleClose = () => {
+    setModalId("");
+  };
+  const handleCheck = () => {};
 
   return (
     <div className="flex justify-center items-center border-2 inline-block border-gray-500 py-10 w-1/2 m-auto">
@@ -159,7 +97,7 @@ const App = () => {
             products={products}
             onRemove={handleOnRemove}
             handleReorderVariants={handleReorderVariants}
-            onEdit ={onEdit}
+            onEdit={onEdit}
           />
           <div className="flex justify-end">
             <AddProductButton
@@ -171,8 +109,8 @@ const App = () => {
             />
           </div>
         </DndContext>
-        <BasicModal  open={true} >
-          <ModalList/>
+        <BasicModal open={modalId ? true : false}>
+          <ModalList handleClose={handleClose} />
         </BasicModal>
       </div>
     </div>
