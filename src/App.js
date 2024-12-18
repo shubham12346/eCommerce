@@ -16,10 +16,9 @@ import { arrayMove } from "@dnd-kit/sortable";
 const App = () => {
   const [products, setProducts] = useState([]);
   const [modalId, setModalId] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleAddProduct = () => {
-    setProducts([...products, {}]);
+    setProducts([...products, { id: new Date().getTime() }]);
   };
 
   const handleOnRemove = (productId) => {
@@ -82,7 +81,15 @@ const App = () => {
   const handleClose = () => {
     setModalId("");
   };
-  const handleCheck = () => {};
+  const handleUpdateProductList = (product) => {
+    const updateObjectInArray = products.map((item) => {
+      if (item.id === modalId) {
+        return { product: product, id: item?.id, title: product[0]?.title };
+      }
+      return item;
+    });
+    setProducts(updateObjectInArray);
+  };
 
   return (
     <div className="flex justify-center items-center border-2 inline-block border-gray-500 py-10 w-1/2 m-auto">
@@ -110,7 +117,10 @@ const App = () => {
           </div>
         </DndContext>
         <BasicModal open={modalId ? true : false}>
-          <ModalList handleClose={handleClose} />
+          <ModalList
+            handleClose={handleClose}
+            handleUpdateProductList={handleUpdateProductList}
+          />
         </BasicModal>
       </div>
     </div>

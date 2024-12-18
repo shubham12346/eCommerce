@@ -5,7 +5,6 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import Product from "./Product";
-const ItemType = "PRODUCT"; // Defining the type for drag-and-drop items
 
 const ProductList = ({
   products,
@@ -29,7 +28,7 @@ const ProductList = ({
           <div key={index} className="my-5">
             <Product
               index={index}
-              product={product}
+              product={product.product}
               onAddDiscount={onAddDiscount}
               onRemove={onRemove}
               totalProduct={products?.length}
@@ -37,6 +36,8 @@ const ProductList = ({
               showVariant={showVariant}
               handleReorderVariants={handleReorderVariants}
               onEdit={onEdit}
+              id={product?.id}
+              title={product?.title}
             />
           </div>
         ))}
