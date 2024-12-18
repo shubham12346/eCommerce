@@ -39,16 +39,21 @@ const App = () => {
   const handleReorderVariants = (productId, activeId, overId) => {
     setProducts((prevProducts) =>
       prevProducts.map((product) => {
-        if (product.id === productId) {
-          const variants = [...product.variants];
-          const oldIndex = variants.findIndex((v) => v.id === activeId);
-          const newIndex = variants.findIndex((v) => v.id === overId);
-          return {
-            ...product,
-            variants: arrayMove(variants, oldIndex, newIndex),
-          };
-        }
-        return product;
+        if (product.id !== productId) return product;
+
+        const updatedVariants = [...product.variants];
+        const activeIndex = updatedVariants.findIndex(
+          (variant) => variant.id === activeId
+        );   
+        const overIndex = updatedVariants.findIndex(
+          (variant) => variant.id === overId
+        );
+
+        // Swap the variants
+        const [removed] = updatedVariants.splice(activeIndex, 1);
+        updatedVariants.splice(overIndex, 0, removed);
+
+        return { ...product, variants: updatedVariants };
       })
     );
   };
@@ -56,25 +61,32 @@ const App = () => {
   const handleDragEnd = ({ active, over }) => {
     if (!over) return;
 
-    const activeId = active.id;
-    const overId = over.id;
+    const activeId = active.id; // The item being dragged
+    const overId = over.id; // The drop target
 
-    // Check if the drag is for a product
-    if (products.some((product, index) => product.id === activeId)) {
+    console.log("activeId:", activeId, "overId:", overId);
+
+    // Handle dragging a parent product
+    if (products.some((product) => product.id === activeId)) {
       handleReorderProducts(activeId, overId);
       return;
     }
 
-    // Check if the drag is for a variant
-    const parentProduct = products.find((product) =>
-      product.variants.some((variant) => variant.id === activeId)
-    );
+    // Handle dragging a variant
+    products.forEach((product) => {
+      const activeVariantIndex = product.variants?.findIndex(
+        (variant) => variant.id === activeId
+      );
+      const overVariantIndex = product.variants?.findIndex(
+        (variant) => variant.id === overId
+      );
 
-    if (parentProduct) {
-      handleReorderVariants(parentProduct.id, activeId, overId);
-    }
+      // If both active and over are in the same product's variants array
+      if (activeVariantIndex > -1 && overVariantIndex > -1) {
+        handleReorderVariants(product.id, activeId, overId);
+      }
+    });
   };
-
   const onEdit = (productId) => {
     setModalId(productId);
   };

@@ -6,6 +6,7 @@ import { CSS } from "@dnd-kit/utilities";
 const Variant = ({ variant, index, onRemove }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: variant?.id });
+
   const style = {
     transition,
     transform: CSS.Transform.toString(transform),

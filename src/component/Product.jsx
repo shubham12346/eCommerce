@@ -71,12 +71,12 @@ const Product = ({
 
             {showVariant === id ? (
               <div className="">
-                {/* {product[0] && product[0].variants?.length > 0 && (
+                {product[0] && product[0].variants?.length > 0 && (
                   <SortableContext
-                    items={product.variants}
+                    items={product[0]?.variants}
                     strategy={verticalListSortingStrategy}
                   >
-                    {product[0]?.variants.map((variant, index) => (
+                    {product[0]?.variants?.map((variant, index) => (
                       <Variant
                         key={`${variant?.id}`}
                         variant={variant}
@@ -85,15 +85,7 @@ const Product = ({
                       />
                     ))}
                   </SortableContext>
-                )} */}
-                {product[0]?.variants.map((variant, index) => (
-                  <Variant
-                    key={`${variant?.id}`}
-                    variant={variant}
-                    index={index}
-                    onRemove={onRemove}
-                  />
-                ))}
+                )}
               </div>
             ) : null}
           </div>
