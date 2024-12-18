@@ -16,7 +16,7 @@ const Variant = ({ variant, index, onRemove }) => {
     <div className="flex my-1" ref={setNodeRef} style={style} {...attributes}>
       <div>
         <DragIndicatorIcon {...listeners} />
-      </div>
+      </div>  
       <div className="mr-2 ">
         <div className="">{`${index}`}.</div>
       </div>

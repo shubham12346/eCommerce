@@ -40,23 +40,37 @@ const App = () => {
     setProducts((prevProducts) =>
       prevProducts.map((product) => {
         if (product.id !== productId) return product;
-
-        const updatedVariants = [...product.variants];
-        const activeIndex = updatedVariants.findIndex(
-          (variant) => variant.id === activeId
-        );   
-        const overIndex = updatedVariants.findIndex(
-          (variant) => variant.id === overId
-        );
-
+  
+        // Ensure that we safely access the variants array
+        const productCopy = { ...product };
+        const variants = [...productCopy.product[0]?.variants];
+  
+        if (!variants) return productCopy;  // Return the product if variants don't exist
+  
+        const activeIndex = variants.findIndex((variant) => variant.id === activeId);
+        const overIndex = variants.findIndex((variant) => variant.id === overId);
+  
+        // If either activeIndex or overIndex is invalid, return the product unmodified
+        if (activeIndex === -1 || overIndex === -1) return productCopy;
+  
         // Swap the variants
-        const [removed] = updatedVariants.splice(activeIndex, 1);
-        updatedVariants.splice(overIndex, 0, removed);
-
-        return { ...product, variants: updatedVariants };
+        const [removed] = variants.splice(activeIndex, 1);
+        variants.splice(overIndex, 0, removed);
+  
+        // Return a new object with updated variants
+        return {
+          ...productCopy,
+          product: [
+            {
+              ...productCopy.product[0],
+              variants,  // Updated variants array
+            },
+          ],
+        };
       })
     );
   };
+  
 
   const handleDragEnd = ({ active, over }) => {
     if (!over) return;
@@ -74,10 +88,11 @@ const App = () => {
 
     // Handle dragging a variant
     products.forEach((product) => {
-      const activeVariantIndex = product.variants?.findIndex(
+      console.log("product",product)
+      const activeVariantIndex = product.product[0]?.variants?.findIndex(
         (variant) => variant.id === activeId
       );
-      const overVariantIndex = product.variants?.findIndex(
+      const overVariantIndex =product?.product[0]?.variants?.findIndex(
         (variant) => variant.id === overId
       );
 
