@@ -13,15 +13,20 @@ const Variant = ({ variant, index, onRemove }) => {
   };
 
   return (
-    <div className="flex my-1" ref={setNodeRef} style={style} {...attributes}>
+    <div
+      className="flex my-1 pl-12 justify-center items-center"
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+    >
       <div>
         <DragIndicatorIcon {...listeners} />
-      </div>  
-      <div className="mr-2 ">
+      </div>
+      <div className="mr-2">
         <div className="">{`${index}`}.</div>
       </div>
-      <div className="border-2 border-black px-3 flex">
-        <div className="w-96 flex items-center">
+      <div className="border-2 border-black px-3 flex rounded-3xl">
+        <div className="lg:min-w-[21rem] xl:w-[18rem] flex items-center py-1 ">
           <h3 className="text-sm px-1">{variant?.title}</h3>
         </div>
         <div className="cursor-pointer text-sm">Edit</div>

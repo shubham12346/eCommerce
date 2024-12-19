@@ -109,25 +109,25 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
 
   return (
     <div className="w-[100%] relative h-[70vh] py-2 rounded-lg flex flex-col">
-      {/* Header Section */}
       <div className="flex justify-between border-b-[1px] border-black py-2 px-4">
         <h2 className="text-[1rem] font-[600] pb-4">Add products</h2>
         <CloseIcon onClick={handleClose} />
       </div>
 
-      {/* Search Bar */}
-      <div className="mt-3 py-2 px-4">
+      <div className="mt-3  px-4">
         <TextField
-          id=""
-          label=""
           defaultValue="Hello"
-          className="w-[35rem] py-2"
+          className="w-[30rem] "
+          sx={{
+            "& .MuiInputBase-root": {
+              height: "40px", // Adjust the height
+            },
+          }}
           value={searchKeyword}
           onChange={handleSearchList}
         />
       </div>
 
-      {/* Product List */}
       <div className="flex-1 overflow-auto px-4 mb-[4rem] ">
         {loading ? (
           <div className="my-10 flex items-center justify-center">
@@ -152,7 +152,6 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
         )}
       </div>
 
-      {/* Footer Section */}
       <div className="absolute bottom-0 left-0 w-full flex p-2 bg-gray-100 justify-end">
         <button
           className="py-2 px-4 bg-[#3f51b5] text-[white] font-[1rem] hover:bg-[#283593]"

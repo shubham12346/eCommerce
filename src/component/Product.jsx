@@ -7,6 +7,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
 
 const Product = ({
   index,
@@ -29,33 +30,36 @@ const Product = ({
   };
   return (
     <div ref={setNodeRef} style={style} {...attributes}>
-      <div className="flex">
+      <div className="flex justify-center items-center ">
         <div>
           <DragIndicatorIcon {...listeners} />
         </div>
-        <div className="mr-2">
-          <div className="">{`${index}`}.</div>
+        <div>
+          <div className="pr-4">{`${index}`}.</div>
         </div>
-        <div className="border-2 border-black px-3 flex">
-          <div className="w-96 flex items-center">
+        <div className="border-2 border-black/7 px-3 py-2 flex justify-center items-center shadow-sm">
+          <div className="lg:min-w-[12rem] xl:w-[18rem] w-full flex items-center">
             <h3 className="text-sm px-1">{title}</h3>
           </div>
-          <div className="cursor-pointer text-sm" onClick={() => onEdit(id)}>
-            Edit
+          <div
+            className="cursor-pointer text-sm items-center text-center "
+            onClick={() => onEdit(id)}
+          >
+            <ModeEditIcon className="text-customGreen" />
           </div>
         </div>
 
         <button
           onClick={() => onAddDiscount(id)}
-          className="mx-2 p-2 border-2 border-black  text-sm"
+          className="mx-2 py-3 w-full max-w-[15rem] rounded-sm   text-sm bg-customGreen text-white"
         >
           Add Discount
         </button>
-        {totalProduct > 1 && (
+        {/* {totalProduct > 1 && (
           <button onClick={() => onRemove(index)} className="m-1 p-1">
             x
           </button>
-        )}
+        )} */}
       </div>
       <div>
         {product?.length > 0 && product[0]?.variants?.length > 0 && (
@@ -70,7 +74,7 @@ const Product = ({
             </div>
 
             {showVariant === id ? (
-              <div className="">
+              <div>
                 {product[0] && product[0].variants?.length > 0 && (
                   <SortableContext
                     items={product[0]?.variants}
