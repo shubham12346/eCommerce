@@ -5,11 +5,18 @@ import SearchListItem from "./SearchListItem";
 import { fetchProducts } from "../services/api";
 import CircularProgress from "@mui/material/CircularProgress";
 import "./modal.css";
+import SearchIcon from "@mui/icons-material/Search";
+import InputAdornment from "@mui/material/InputAdornment";
+import { useSelector, useDispatch } from "react-redux";
+import { addSearchItemsToList, setProducts } from "../services/searchService";
 
 const ModalList = ({ handleClose, handleUpdateProductList }) => {
   const [productList, setProductList] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const { products, SearchCached } = useSelector((state) => state.product);
+  const dispatch = useDispatch();
 
   const handleSearchList = (event) => {
     event.preventDefault();
@@ -17,21 +24,31 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
     const value = event.target.value;
     setSearchKeyword(value);
   };
-
+  console.log("products", products, "SearchCached", SearchCached);
   useEffect(() => {
     let timeout;
     timeout = setTimeout(async () => {
-      if (searchKeyword.length) {
-        try {
+      try {
+        const cached = SearchCached[searchKeyword];
+        if (cached) {
+          dispatch(setProducts(cached));
+        } else {
           const res = await fetchProducts(searchKeyword, 50);
           const refactoredRes = addCheckedKeyInTHeResponseList(res);
-          setProductList([...refactoredRes]);
-          setLoading(false);
-        } catch (err) {
-          console.error(err);
-        } finally {
-          setLoading(false);
+          dispatch(setProducts(refactoredRes));
+          dispatch(
+            addSearchItemsToList({
+              searchKeyword: searchKeyword,
+              res: refactoredRes,
+            })
+          );
         }
+
+        setLoading(false);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
       }
     }, 500);
     return () => {
@@ -109,22 +126,32 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
 
   return (
     <div className="w-[100%] relative h-[70vh] py-2 rounded-lg flex flex-col">
-      <div className="flex justify-between border-b-[1px] border-black py-2 px-4">
-        <h2 className="text-[1rem] font-[600] pb-4">Add products</h2>
-        <CloseIcon onClick={handleClose} />
+      <div className="flex justify-between border-b-[1px] border-black/9 py-2 px-4">
+        <h2 className="text-[1rem] font-[600] pb-4 ">Add products</h2>
+        <CloseIcon onClick={handleClose} className="cursor-pointer" />
       </div>
 
-      <div className="mt-3  px-4">
+      <div className="mt-2  px-4  pb-2 border-b-[1px] border-black/9 ">
         <TextField
           defaultValue="Hello"
-          className="w-[30rem] "
+          className="w-[30rem]  text-[0.8rem]"
           sx={{
             "& .MuiInputBase-root": {
-              height: "40px", // Adjust the height
+              height: "34px", // Adjust the height
             },
           }}
+          placeholder="Search Product"
           value={searchKeyword}
           onChange={handleSearchList}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            },
+          }}
         />
       </div>
 
@@ -135,7 +162,7 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
           </div>
         ) : (
           <div>
-            {productList?.map((product) => (
+            {products?.map((product) => (
               <div key={product?.id}>
                 <SearchListItem
                   checked={product?.checked}

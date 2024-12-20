@@ -43,7 +43,7 @@ const DiscountDesc = (handleOnChange, checked) => {
           <span className="text-[0.8rem]">Enable timer for this offer.</span>
         </div>
       </div>
-      <div className="pt-6 pl-2">
+      <div className="pt-6 pl-2 pb-1">
         <span className="text-black/50  font-semibold">Offer Timer</span>
       </div>
     </div>

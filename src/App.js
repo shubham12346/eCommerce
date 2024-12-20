@@ -15,6 +15,7 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
+import Footer from "./component/Footer";
 
 const App = () => {
   const [products, setProducts] = useState([]);
@@ -127,7 +128,7 @@ const App = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center border-2 inline-block border-gray-500 py-10 sm:w-full lg:w-[45vw] m-auto">
+    <div className="flex flex-col justify-center items-center  py-10 sm:w-full lg:w-[45vw] m-auto">
       <div className="w-full px-4">
         <Header />
         <div className="px-6">
@@ -165,6 +166,7 @@ const App = () => {
         </BasicModal>
       </div>
       <DiscountDesc />
+      <Footer />
     </div>
   );
 };
