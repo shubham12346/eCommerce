@@ -55,14 +55,9 @@ const Product = ({
         >
           Add Discount
         </button>
-        {/* {totalProduct > 1 && (
-          <button onClick={() => onRemove(index)} className="m-1 p-1">
-            x
-          </button>
-        )} */}
       </div>
       <div>
-        {product?.length > 0 && product[0]?.variants?.length > 0 && (
+        {product?.length && product[0]?.variants?.length > 1 && (
           <div className="flex flex-col items-end justify-end ">
             <div className="flex my-2">
               <button
@@ -84,8 +79,9 @@ const Product = ({
                       <Variant
                         key={`${variant?.id}`}
                         variant={variant}
-                        index={index}
+                        index={index + 1}
                         onRemove={onRemove}
+                        productId={id}
                       />
                     ))}
                   </SortableContext>

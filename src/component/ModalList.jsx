@@ -24,7 +24,7 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
     const value = event.target.value;
     setSearchKeyword(value);
   };
-  console.log("products", products, "SearchCached", SearchCached);
+
   useEffect(() => {
     let timeout;
     timeout = setTimeout(async () => {
@@ -36,6 +36,7 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
           const res = await fetchProducts(searchKeyword, 50);
           const refactoredRes = addCheckedKeyInTHeResponseList(res);
           dispatch(setProducts(refactoredRes));
+          setProductList(refactoredRes);
           dispatch(
             addSearchItemsToList({
               searchKeyword: searchKeyword,
@@ -162,7 +163,7 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
           </div>
         ) : (
           <div>
-            {products?.map((product) => (
+            {productList?.map((product) => (
               <div key={product?.id}>
                 <SearchListItem
                   checked={product?.checked}

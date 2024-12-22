@@ -27,11 +27,31 @@ const App = () => {
     }
   };
 
-  const handleOnRemove = (productId) => {
-    const updatedProducts = products.filter(
-      (product, index) => index !== productId
-    );
-    setProducts(updatedProducts);
+  const handleOnRemove = (productId, variantId) => {
+    const UpdatedProduct = products.map((product) => {
+      if (product.id !== productId) return product; // Skip products that don't match
+
+      // Ensure that product and variants exist
+      const productCopy = { ...product };
+      const currentProduct = productCopy.product[0]; // Access the first product object
+      if (!currentProduct || !currentProduct.variants) return productCopy;
+
+      // Filter the variants array
+      const updatedVariants = currentProduct.variants.filter(
+        (variant) => variant.id !== variantId
+      );
+
+      return {
+        ...productCopy,
+        product: [
+          {
+            ...currentProduct,
+            variants: updatedVariants, // Correctly update the variants key
+          },
+        ],
+      };
+    });
+    setProducts(UpdatedProduct);
   };
   const sensors = useSensors(useSensor(PointerSensor));
 
@@ -87,8 +107,6 @@ const App = () => {
     const activeId = active.id; // The item being dragged
     const overId = over.id; // The drop target
 
-    console.log("activeId:", activeId, "overId:", overId);
-
     // Handle dragging a parent product
     if (products.some((product) => product.id === activeId)) {
       handleReorderProducts(activeId, overId);
@@ -97,7 +115,6 @@ const App = () => {
 
     // Handle dragging a variant
     products.forEach((product) => {
-      console.log("product", product);
       const activeVariantIndex = product.product[0]?.variants?.findIndex(
         (variant) => variant.id === activeId
       );

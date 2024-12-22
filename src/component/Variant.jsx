@@ -3,7 +3,7 @@ import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-const Variant = ({ variant, index, onRemove }) => {
+const Variant = ({ variant, index, onRemove, productId }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: variant?.id });
 
@@ -31,7 +31,10 @@ const Variant = ({ variant, index, onRemove }) => {
         </div>
         <div className="cursor-pointer text-sm">Edit</div>
       </div>
-      <button onClick={() => onRemove(variant?.id)} className="m-1 p-1">
+      <button
+        onClick={() => onRemove(productId, variant?.id)}
+        className="m-1 p-1"
+      >
         x
       </button>
     </div>

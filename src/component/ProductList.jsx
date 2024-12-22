@@ -21,13 +21,14 @@ const ProductList = ({
   const handleShowVariant = (id) => {
     setShowVariant(id);
   };
+
   return (
     <div>
       <SortableContext items={products} strategy={verticalListSortingStrategy}>
         {products?.map((product, index) => (
-          <div key={index} className="my-5">
+          <div key={product?.id} className="my-5">
             <Product
-              index={index}
+              index={index + 1}
               product={product.product}
               onAddDiscount={onAddDiscount}
               onRemove={onRemove}
