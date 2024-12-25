@@ -14,8 +14,10 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
   const [productList, setProductList] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const { SearchCached } = useSelector((state) => state.product);
+   const [page ,setPage] = useState(1)
+   const [isFetchingMore, setIsFetchingMore] = useState(false);
+   const [noNextData ,setNoNextData] = useState(false)
+   const {  SearchCached } = useSelector((state) => state.product);
   const dispatch = useDispatch();
 
   const handleSearchList = (event) => {
@@ -23,39 +25,66 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
     setLoading(true);
     const value = event.target.value;
     setSearchKeyword(value);
+    setPage(1); 
+    setNoNextData(false)
+
   };
 
-  useEffect(() => {
-    let timeout;
-    timeout = setTimeout(async () => {
-      try {
-        const cached = SearchCached[searchKeyword];
-        if (cached) {
-          dispatch(setProducts(cached));
-        } else {
-          const res = await fetchProducts(searchKeyword, 10);
-          const refactoredRes = addCheckedKeyInTHeResponseList(res);
-          dispatch(setProducts(refactoredRes));
-          setProductList(refactoredRes);
-          dispatch(
-            addSearchItemsToList({
-              searchKeyword: searchKeyword,
-              res: refactoredRes,
-            })
-          );
-        }
 
-        setLoading(false);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
+
+  useEffect(() => {
+    let timeout
+    if (searchKeyword) {
+       timeout = setTimeout(() => {
+        fetchData(searchKeyword, page);
+      }, 1000);
+      
+    }
+    return () => clearTimeout(timeout);
+  }, [searchKeyword, page]);
+
+  const fetchData = async (keyword, page) => {
+    if(page===1){
+      setLoading(true)
+    }
+    try {
+      const cached = SearchCached[keyword];
+      if (page === 1 && cached) {
+        dispatch(setProducts(cached));
+        setProductList(cached);
+      } else {
+         if(!noNextData){
+          const res = await fetchProducts(keyword, 10, page);
+        if(!res){
+          setNoNextData(true)
+        }
+        const refactoredRes = addCheckedKeyInTHeResponseList(res);
+        setProductList((prev) => (page === 1 ? refactoredRes : [...prev, ...refactoredRes]));
+        dispatch(setProducts(refactoredRes));
+        dispatch(
+          addSearchItemsToList({
+            searchKeyword: keyword,
+            res: refactoredRes,
+          })
+        )
+         }
+        
       }
-    }, 500);
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [searchKeyword]);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+      setIsFetchingMore(false);
+    }
+  };
+
+  const handleScroll = (e) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.target;
+    if (scrollHeight - scrollTop <= clientHeight + 50 && !isFetchingMore && !loading) {
+      setIsFetchingMore(true);
+      setPage((prev) => prev + 1); // Fetch next page
+    }
+  };
 
   const addCheckedKeyInTHeResponseList = (res) => {
     const newRes = res?.map((item) => {
@@ -156,13 +185,14 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
         />
       </div>
 
-      <div className="flex-1 overflow-auto px-4 mb-[4rem] ">
+      <div className="flex-1 overflow-auto  mb-[4rem]   scrollbar-thumb-slate-400  scrollbar-track-transparent no-scroll-arrows  scrollbar-track-head"  onScroll={handleScroll}>
         {loading ? (
           <div className="my-10 flex items-center justify-center">
             <CircularProgress />
           </div>
         ) : (
           <div>
+            
             {productList?.map((product) => (
               <div key={product?.id}>
                 <SearchListItem
@@ -176,6 +206,9 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
                 />
               </div>
             ))}
+            {isFetchingMore &&  <div className="my-10 flex items-center justify-center">
+            <CircularProgress />
+          </div>}
           </div>
         )}
       </div>

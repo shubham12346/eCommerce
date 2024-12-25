@@ -8,5 +8,10 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+ 
+    plugins: [
+      // ...
+      require('tailwind-scrollbar'),
+    ],
+
 };
