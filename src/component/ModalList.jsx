@@ -17,6 +17,7 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
    const [page ,setPage] = useState(1)
    const [isFetchingMore, setIsFetchingMore] = useState(false);
    const [noNextData ,setNoNextData] = useState(false)
+   const [checkedItem ,setCheckedItem] = useState(0) 
    const {  SearchCached } = useSelector((state) => state.product);
   const dispatch = useDispatch();
 
@@ -89,6 +90,7 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
   const addCheckedKeyInTHeResponseList = (res) => {
     const newRes = res?.map((item) => {
       item.checked = false;
+     
 
       if (Array.isArray(item?.variants)) {
         item.variants = item.variants.map((variant) => {
@@ -107,9 +109,10 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
       if (item.id === product?.id) {
         // Toggle the parent product
         const isParentChecked = !item.checked;
-
         // If variantId is null, toggle all child variants with the parent
         if (!variantId) {
+          setCheckedItem((prev)=> isParentChecked?prev+1:prev-1)
+
           return {
             ...item,
             checked: isParentChecked,
@@ -144,7 +147,7 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
 
     productList.forEach((item) => {
       if (item?.checked) {
-        checkedItems.push(item);
+        checkedItems?.push(item);
       } else if (item?.variants?.length) {
         const newItems = item?.variants?.filter((variant) => variant.checked);
         checkedItems = [...checkedItems, ...newItems];
@@ -152,6 +155,7 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
     });
     handleUpdateProductList(checkedItems);
     handleClose();
+    setCheckedItem(0)
   };
 
   return (
@@ -185,7 +189,7 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
         />
       </div>
 
-      <div className="flex-1 overflow-auto  mb-[4rem]   scrollbar-thumb-slate-400  scrollbar-track-transparent no-scroll-arrows  scrollbar-track-head"  onScroll={handleScroll}>
+      <div className="flex-1 overflow-auto  mb-[4rem]    scrollbar-thumb-slate-400  scrollbar-track-transparent no-scroll-arrows  scrollbar-track-head"  onScroll={handleScroll}>
         {loading ? (
           <div className="my-10 flex items-center justify-center">
             <CircularProgress />
@@ -213,19 +217,26 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
         )}
       </div>
 
-      <div className="absolute bottom-0 left-0 w-full flex p-2 bg-gray-100 justify-end">
+      <div className="absolute bottom-0 left-0 w-full flex p-2 py-4 px-3 bg-gray-100 justify-between shadow-lg">
+        <div>
+           <div className="text-black">{`${checkedItem} products selected`}</div> 
+        </div>
+        <div>
         <button
-          className="py-2 px-4 bg-[#3f51b5] text-[white] font-[1rem] hover:bg-[#283593]"
+          className="py-1 px-4 border-[1px] border-black/70 text-black font-[1rem] shadow-lg rounded-md"
           onClick={() => handleClose()}
         >
-          Close
+          Cancel
         </button>
         <button
-          className="py-2 px-4 ml-2 bg-[#4caf50] text-[white] font-[1rem] hover:bg-[#388e3c]"
+          className={` ml-2  text-[white] font-[1rem] shadow-lg rounded-md py-1 px-4 ${checkedItem===0?'bg-gray-400 ':' bg-customGreen'}`}
           onClick={() => addCheckedItemToCart()}
+          disabled ={checkedItem===0}
         >
-          Add to cart
+          Add
         </button>
+        </div>
+       
       </div>
     </div>
   );

@@ -137,12 +137,28 @@ const App = () => {
   const handleUpdateProductList = (product) => {
     const updateObjectInArray = products.map((item) => {
       if (item.id === modalId) {
-        return { product: product, id: item?.id, title: product[0]?.title };
+        return { product: product, id: item?.id, title: product[0]?.title, typeOfDiscount :''
+          ,valueOfDiscount :'',discountInputOpen:false };
       }
       return item;
     });
     setProducts(updateObjectInArray);
   };
+
+  handleAddDiscount =(product)=>{
+    setProducts((prev)=> 
+    prev?.map((item)=>{
+      if(item?.id === product?.id){
+       return {
+        ...item, discountInputOpen:true
+       }
+      }
+      return item
+    }
+    )
+    )
+
+  }
 
   return (
     <div className="flex flex-col justify-center items-center  py-10 sm:w-full lg:w-[45vw] m-auto">
@@ -160,6 +176,7 @@ const App = () => {
               onRemove={handleOnRemove}
               handleReorderVariants={handleReorderVariants}
               onEdit={onEdit}
+              onAddDiscount={handleAddDiscount}
             />
             <div className="flex justify-end ">
               <AddProductButton
