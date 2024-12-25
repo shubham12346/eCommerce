@@ -1,4 +1,4 @@
-export const fetchProducts = async (search, page, limit) => {
+export const fetchProducts = async (search, limit, page) => {
   try {
     const response = await fetch(
       `https://stageapi.monkcommerce.app/task/products/search?search=${search}&page=${page}&limit=${limit}`,

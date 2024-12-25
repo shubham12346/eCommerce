@@ -15,7 +15,7 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { products, SearchCached } = useSelector((state) => state.product);
+  const { SearchCached } = useSelector((state) => state.product);
   const dispatch = useDispatch();
 
   const handleSearchList = (event) => {
@@ -33,7 +33,7 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
         if (cached) {
           dispatch(setProducts(cached));
         } else {
-          const res = await fetchProducts(searchKeyword, 50);
+          const res = await fetchProducts(searchKeyword, 10);
           const refactoredRes = addCheckedKeyInTHeResponseList(res);
           dispatch(setProducts(refactoredRes));
           setProductList(refactoredRes);
