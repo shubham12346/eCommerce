@@ -1,5 +1,6 @@
 import React from "react";
 import Checkbox from "@mui/material/Checkbox";
+import ImageIcon from '@mui/icons-material/Image';
 
 const SearchListItem = ({
   checked,
@@ -10,6 +11,7 @@ const SearchListItem = ({
   product,
   handleOnChange,
 }) => {
+  console.log("pro source",src)
   return (
     <div className=" w-[100%] border-b-2  border-gray-500 overflow-y-auto overflow-x-hidden">
       <CheckboxElement
@@ -17,7 +19,7 @@ const SearchListItem = ({
         src={src}
         label={label}
         itemQuantity={itemQuantity}
-        price={price}
+        price={''}
         id={product?.id}
         handleOnChange={() => {
           handleOnChange(product, "");
@@ -29,10 +31,10 @@ const SearchListItem = ({
           <div className="pl-10 pr-2">
             <CheckboxElement
               checked={item?.checked}
-              src={product?.image[index]?.src}
+              src={src}
               label={item?.title}
               itemQuantity={item?.inventory_quantity}
-              price={price}
+              price={item?.price}
               id={item?.id}
               handleOnChange={() => {
                 handleOnChange(product, item?.id);
@@ -47,28 +49,29 @@ const SearchListItem = ({
 
 const CheckboxElement = ({
   checked,
-  src,
+  src : Source,
   label,
   itemQuantity,
   price,
   item,
   handleOnChange,
 }) => {
+  console.log("price",price)
   return (
-    <div className="flex items-center">
-      <div>
+    <div className="flex items-center justify-between">
+      <div className="flex items-center">
         <Checkbox
           checked={checked}
           onChange={() => {
             handleOnChange(item);
           }}
         />
-        <image src={src} alt="hello " />
+        {Source ? <div className="p-2"> <img src={Source} alt="product image" className="h-8 w-8 mr-3 mx-1 " /></div> : <div className="p-2 bg-gray-300 m-2"><ImageIcon /></div> }
         <label htmlFor=""> {label}</label>
       </div>
-      <div>
-        <label htmlFor="">{itemQuantity}</label>
-        <label htmlFor="">{price}</label>
+      <div className="mr-2">
+       {itemQuantity && <label htmlFor="" className="mx-2">{itemQuantity +' available'}</label> } 
+       {price && <label htmlFor="">&#8377;{price}</label>} 
       </div>
     </div>
   );

@@ -145,7 +145,7 @@ const App = () => {
     setProducts(updateObjectInArray);
   };
 
-  handleAddDiscount =(product)=>{
+  const handleAddDiscount =(product)=>{
     setProducts((prev)=> 
     prev?.map((item)=>{
       if(item?.id === product?.id){

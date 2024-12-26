@@ -157,7 +157,7 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
     handleClose();
     setCheckedItem(0)
   };
-
+console.log("productList",productList)
   return (
     <div className="w-[100%] relative h-[70vh] py-2 rounded-lg flex flex-col">
       <div className="flex justify-between border-b-[1px] border-black/9 py-2 px-4">
