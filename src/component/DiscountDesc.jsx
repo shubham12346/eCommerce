@@ -1,19 +1,30 @@
-import React from "react";
-import CheckBox from "@mui/icons-material/CheckBox";
+import React, { useState } from "react";
+import Checkbox from "@mui/material/Checkbox";
 
-const DiscountDesc = (handleOnChange, checked) => {
+const DiscountDesc = () => {
+  const [checkboxes, setCheckboxes] = useState({
+    checkbox1: false,
+    checkbox2: false,
+  });
   const iconHeight = "15px";
+
+  const handleOnChange = (checkBoxNum) => {
+    setCheckboxes({
+      ...checkboxes,
+      [checkBoxNum]: !checkboxes[checkBoxNum],
+    });
+  };
   return (
     <div className="flex flex-col pl-10">
       <div className="py-4 ">
         <div className="flex text-[0.8rem] items-center">
-          <CheckBox
-            checked={checked}
+          <Checkbox
             onChange={() => {
-              handleOnChange();
+              handleOnChange("checkbox1");
             }}
             className=""
             sx={{ height: iconHeight }}
+            checked={checkboxes.checkbox1}
           />
 
           <div className="pl-2">Apply Discount on compare price.</div>
@@ -33,12 +44,12 @@ const DiscountDesc = (handleOnChange, checked) => {
           </span>
         </div>
         <div className="pt-1">
-          <CheckBox
-            checked={checked}
+          <Checkbox
             onChange={() => {
-              handleOnChange();
+              handleOnChange("checkbox2");
             }}
             sx={{ height: iconHeight }}
+            checked={checkboxes.checkbox2}
           />
           <span className="text-[0.8rem]">Enable timer for this offer.</span>
         </div>

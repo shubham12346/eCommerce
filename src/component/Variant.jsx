@@ -2,6 +2,7 @@ import React from "react";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import CloseIcon from "@mui/icons-material/Close";
 
 const Variant = ({ variant, index, onRemove, productId }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -25,18 +26,15 @@ const Variant = ({ variant, index, onRemove, productId }) => {
       <div className="mr-2">
         <div className="">{`${index}`}.</div>
       </div>
-      <div className="border-2 border-black px-3 flex rounded-3xl">
-        <div className="lg:min-w-[21rem] xl:w-[18rem] flex items-center py-1 ">
+      <div className="border-2 border-black/8 px-3 flex rounded-3xl">
+        <div className="lg:min-w-[25rem] xl:w-[18rem] flex items-center py-1 ">
           <h3 className="text-sm px-1">{variant?.title}</h3>
         </div>
-        <div className="cursor-pointer text-sm">Edit</div>
       </div>
-      <button
+      <CloseIcon
         onClick={() => onRemove(productId, variant?.id)}
         className="m-1 p-1"
-      >
-        x
-      </button>
+      />
     </div>
   );
 };

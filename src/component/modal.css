@@ -1,23 +1,23 @@
 /* modal.css */
 ::-webkit-scrollbar-button {
-    display: none;
-  }
-  ::-moz-scrollbar-button {
-    display: none;
-  }
-.no-scroll-arrows::-webkit-scrollbar-button {   
-    display: none !important;
-  }
-  
-  .no-scroll-arrows::-webkit-scrollbar {
-    width: 8px;  /* You can customize this */
-  }
-  
-  .no-scroll-arrows::-webkit-scrollbar-thumb {
-    background-color: #b3b3b3;
-    border-radius: 10px;
-  }
-  
-  .no-scroll-arrows::-webkit-scrollbar-track {
-    background: transparent;
-  } 
+  display: none;
+}
+::-moz-scrollbar-button {
+  display: none;
+}
+.no-scroll-arrows::-webkit-scrollbar-button {
+  display: none !important;
+}
+
+.no-scroll-arrows::-webkit-scrollbar {
+  width: 8px; /* You can customize this */
+}
+
+.no-scroll-arrows::-webkit-scrollbar-thumb {
+  background-color: #b3b3b3;
+  border-radius: 10px;
+}
+
+.no-scroll-arrows::-webkit-scrollbar-track {
+  background: transparent;
+}

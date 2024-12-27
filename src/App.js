@@ -28,29 +28,35 @@ const App = () => {
   };
 
   const handleOnRemove = (productId, variantId) => {
-    const UpdatedProduct = products.map((product) => {
-      if (product.id !== productId) return product; // Skip products that don't match
+    let UpdatedProduct;
+    if (!variantId) {
+      UpdatedProduct = products.filter((item) => item.id !== productId);
+    } else {
+      UpdatedProduct = products.map((product) => {
+        if (product.id !== productId) return product; // Skip products that don't match
 
-      // Ensure that product and variants exist
-      const productCopy = { ...product };
-      const currentProduct = productCopy.product[0]; // Access the first product object
-      if (!currentProduct || !currentProduct.variants) return productCopy;
+        // Ensure that product and variants exist
+        const productCopy = { ...product };
+        const currentProduct = productCopy.product[0]; // Access the first product object
+        if (!currentProduct || !currentProduct.variants) return productCopy;
 
-      // Filter the variants array
-      const updatedVariants = currentProduct.variants.filter(
-        (variant) => variant.id !== variantId
-      );
+        // Filter the variants array
+        const updatedVariants = currentProduct.variants.filter(
+          (variant) => variant.id !== variantId
+        );
 
-      return {
-        ...productCopy,
-        product: [
-          {
-            ...currentProduct,
-            variants: updatedVariants, // Correctly update the variants key
-          },
-        ],
-      };
-    });
+        return {
+          ...productCopy,
+          product: [
+            {
+              ...currentProduct,
+              variants: updatedVariants, // Correctly update the variants key
+            },
+          ],
+        };
+      });
+    }
+
     setProducts(UpdatedProduct);
   };
   const sensors = useSensors(useSensor(PointerSensor));
@@ -137,31 +143,52 @@ const App = () => {
   const handleUpdateProductList = (product) => {
     const updateObjectInArray = products.map((item) => {
       if (item.id === modalId) {
-        return { product: product, id: item?.id, title: product[0]?.title, typeOfDiscount :''
-          ,valueOfDiscount :'',discountInputOpen:false };
+        return {
+          product: product,
+          id: item?.id,
+          title: product[0]?.title,
+          typeOfDiscount: "",
+          valueOfDiscount: "",
+          discountInputOpen: false,
+        };
       }
       return item;
     });
     setProducts(updateObjectInArray);
   };
 
-  const handleAddDiscount =(product)=>{
-    setProducts((prev)=> 
-    prev?.map((item)=>{
-      if(item?.id === product?.id){
-       return {
-        ...item, discountInputOpen:true
-       }
+  const handleDiscount = (productId, type, value) => {
+    let newProducts = products?.map((item) => {
+      if (item?.id === productId) {
+        return {
+          ...item,
+          discountInputOpen: true,
+          typeOfDiscount:
+            type === "discountType" ? value : item?.typeOfDiscount,
+          valueOfDiscount:
+            type === "discountType" ? item?.valueOfDiscount : value,
+        };
       }
-      return item
-    }
-    )
-    )
+      return item;
+    });
+    setProducts(newProducts);
+  };
 
-  }
+  const handleAddDiscount = (productId) => {
+    let newProducts = products?.map((item) => {
+      if (item?.id === productId) {
+        return {
+          ...item,
+          discountInputOpen: !item?.discountInputOpen,
+        };
+      }
+      return item;
+    });
+    setProducts(newProducts);
+  };
 
   return (
-    <div className="flex flex-col justify-center items-center  py-10 sm:w-full lg:w-[45vw] m-auto">
+    <div className="flex flex-col justify-center items-center  py-10 sm:w-full lg:w-[50vw] m-auto">
       <div className="w-full px-4">
         <Header />
         <div className="px-6">
@@ -177,18 +204,16 @@ const App = () => {
               handleReorderVariants={handleReorderVariants}
               onEdit={onEdit}
               onAddDiscount={handleAddDiscount}
+              handleDiscount={handleDiscount}
             />
             <div className="flex justify-end ">
-              <AddProductButton
-                onAdd={handleAddProduct}
-                btnText={"Add Product"}
-                classNames={` px-28 py-1 border-2  font-normal  text-sm ${
-                  products?.length == 4
-                    ? " bg-gray-300 text-gray-500  "
-                    : "border-green-800 text-green-800  "
-                }`}
-                isDisabled={products?.length == 4}
-              />
+              {products?.length == 4 ? null : (
+                <AddProductButton
+                  onAdd={handleAddProduct}
+                  btnText={"Add Product"}
+                  classNames={` px-28 py-1 border-2  font-normal  text-sm border-green-800 text-green-800  `}
+                />
+              )}
             </div>
           </DndContext>
         </div>

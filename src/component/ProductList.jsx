@@ -12,6 +12,7 @@ const ProductList = ({
   onAddDiscount,
   handleReorderVariants,
   onEdit,
+  handleDiscount,
 }) => {
   // Drag-and-drop logic
   const [showVariant, setShowVariant] = useState("");
@@ -29,7 +30,7 @@ const ProductList = ({
           <div key={product?.id} className="my-5">
             <Product
               index={index + 1}
-              product={product.product}
+              product={product}
               onAddDiscount={onAddDiscount}
               onRemove={onRemove}
               totalProduct={products?.length}
@@ -39,6 +40,7 @@ const ProductList = ({
               onEdit={onEdit}
               id={product?.id}
               title={product?.title}
+              handleDiscount={handleDiscount}
             />
           </div>
         ))}

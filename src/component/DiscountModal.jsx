@@ -1,24 +1,35 @@
-import React, { useState } from "react";
+import React from "react";
+import "./input.css";
 
-const DiscountModal = ({ onClose, onSave }) => {
-  const [type, setType] = useState("flat");
-  const [value, setValue] = useState("");
-
+const DiscountModal = ({
+  productId,
+  handleDiscount,
+  discountValue,
+  discountType,
+}) => {
   return (
-    <div>
-      <h3>Add Discount</h3>
-      <select value={type} onChange={(e) => setType(e.target.value)}>
-        <option value="flat">Flat</option>
-        <option value="percentage">Percentage</option>
-      </select>
+    <div className="flex mx-2">
       <input
+        name="discountValue"
         type="number"
-        placeholder="Discount value"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
+        placeholder=""
+        value={discountValue}
+        onChange={(e) =>
+          handleDiscount(productId, e.target.name, e.target.value)
+        }
+        className=" w-[5rem]  border-[2px] border-black/8 h-[2.6rem] focus:outline-none focus:border-customGreen !appearance-none"
       />
-      <button onClick={() => onSave(type, value)}>Save</button>
-      <button onClick={onClose}>Close</button>
+      <select
+        name="discountType"
+        value={discountType}
+        onChange={(e) =>
+          handleDiscount(productId, e.target.name, e.target.value)
+        }
+        className="px-2 ms-1  w-[5rem]  border-[1px] border-black/8 focus:outline-none focus:border-customGreen py-2"
+      >
+        <option value="flat">flat</option>
+        <option value="percentage">%</option>
+      </select>
     </div>
   );
 };

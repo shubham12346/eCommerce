@@ -14,11 +14,11 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
   const [productList, setProductList] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [loading, setLoading] = useState(false);
-   const [page ,setPage] = useState(1)
-   const [isFetchingMore, setIsFetchingMore] = useState(false);
-   const [noNextData ,setNoNextData] = useState(false)
-   const [checkedItem ,setCheckedItem] = useState(0) 
-   const {  SearchCached } = useSelector((state) => state.product);
+  const [page, setPage] = useState(1);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const [noNextData, setNoNextData] = useState(false);
+  const [checkedItem, setCheckedItem] = useState(0);
+  const { SearchCached } = useSelector((state) => state.product);
   const dispatch = useDispatch();
 
   const handleSearchList = (event) => {
@@ -26,27 +26,23 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
     setLoading(true);
     const value = event.target.value;
     setSearchKeyword(value);
-    setPage(1); 
-    setNoNextData(false)
-
+    setPage(1);
+    setNoNextData(false);
   };
 
-
-
   useEffect(() => {
-    let timeout
+    let timeout;
     if (searchKeyword) {
-       timeout = setTimeout(() => {
+      timeout = setTimeout(() => {
         fetchData(searchKeyword, page);
       }, 1000);
-      
     }
     return () => clearTimeout(timeout);
   }, [searchKeyword, page]);
 
   const fetchData = async (keyword, page) => {
-    if(page===1){
-      setLoading(true)
+    if (page === 1) {
+      setLoading(true);
     }
     try {
       const cached = SearchCached[keyword];
@@ -54,22 +50,23 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
         dispatch(setProducts(cached));
         setProductList(cached);
       } else {
-         if(!noNextData){
+        if (!noNextData) {
           const res = await fetchProducts(keyword, 10, page);
-        if(!res){
-          setNoNextData(true)
+          if (!res) {
+            setNoNextData(true);
+          }
+          const refactoredRes = addCheckedKeyInTHeResponseList(res);
+          setProductList((prev) =>
+            page === 1 ? refactoredRes : [...prev, ...refactoredRes]
+          );
+          dispatch(setProducts(refactoredRes));
+          dispatch(
+            addSearchItemsToList({
+              searchKeyword: keyword,
+              res: refactoredRes,
+            })
+          );
         }
-        const refactoredRes = addCheckedKeyInTHeResponseList(res);
-        setProductList((prev) => (page === 1 ? refactoredRes : [...prev, ...refactoredRes]));
-        dispatch(setProducts(refactoredRes));
-        dispatch(
-          addSearchItemsToList({
-            searchKeyword: keyword,
-            res: refactoredRes,
-          })
-        )
-         }
-        
       }
     } catch (err) {
       console.error(err);
@@ -81,7 +78,11 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
 
   const handleScroll = (e) => {
     const { scrollTop, scrollHeight, clientHeight } = e.target;
-    if (scrollHeight - scrollTop <= clientHeight + 50 && !isFetchingMore && !loading) {
+    if (
+      scrollHeight - scrollTop <= clientHeight + 50 &&
+      !isFetchingMore &&
+      !loading
+    ) {
       setIsFetchingMore(true);
       setPage((prev) => prev + 1); // Fetch next page
     }
@@ -90,7 +91,6 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
   const addCheckedKeyInTHeResponseList = (res) => {
     const newRes = res?.map((item) => {
       item.checked = false;
-     
 
       if (Array.isArray(item?.variants)) {
         item.variants = item.variants.map((variant) => {
@@ -111,7 +111,7 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
         const isParentChecked = !item.checked;
         // If variantId is null, toggle all child variants with the parent
         if (!variantId) {
-          setCheckedItem((prev)=> isParentChecked?prev+1:prev-1)
+          setCheckedItem((prev) => (isParentChecked ? prev + 1 : prev - 1));
 
           return {
             ...item,
@@ -155,9 +155,8 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
     });
     handleUpdateProductList(checkedItems);
     handleClose();
-    setCheckedItem(0)
+    setCheckedItem(0);
   };
-console.log("productList",productList)
   return (
     <div className="w-[100%] relative h-[70vh] py-2 rounded-lg flex flex-col">
       <div className="flex justify-between border-b-[1px] border-black/9 py-2 px-4">
@@ -189,14 +188,16 @@ console.log("productList",productList)
         />
       </div>
 
-      <div className="flex-1 overflow-auto  mb-[4rem]    scrollbar-thumb-slate-400  scrollbar-track-transparent no-scroll-arrows  scrollbar-track-head"  onScroll={handleScroll}>
+      <div
+        className="flex-1 overflow-auto  mb-[4rem]    scrollbar-thumb-slate-400  scrollbar-track-transparent no-scroll-arrows  scrollbar-track-head"
+        onScroll={handleScroll}
+      >
         {loading ? (
           <div className="my-10 flex items-center justify-center">
             <CircularProgress />
           </div>
         ) : (
           <div>
-            
             {productList?.map((product) => (
               <div key={product?.id}>
                 <SearchListItem
@@ -210,33 +211,38 @@ console.log("productList",productList)
                 />
               </div>
             ))}
-            {isFetchingMore &&  <div className="my-10 flex items-center justify-center">
-            <CircularProgress />
-          </div>}
+            {isFetchingMore && (
+              <div className="my-10 flex items-center justify-center">
+                <CircularProgress />
+              </div>
+            )}
           </div>
         )}
       </div>
 
-      <div className="absolute bottom-0 left-0 w-full flex p-2 py-4 px-3 bg-gray-100 justify-between shadow-lg">
+      <div className="absolute bottom-0 left-0 w-full flex p-2 py-4 px-3 bg-gray-100 justify-between shadow-lg border-b-[1px]  border-t-[1px] border-black/9">
         <div>
-           <div className="text-black">{`${checkedItem} products selected`}</div> 
+          <div className="text-black">{`${checkedItem} product${
+            checkedItem > 1 ? "s" : ""
+          }  selected`}</div>
         </div>
         <div>
-        <button
-          className="py-1 px-4 border-[1px] border-black/70 text-black font-[1rem] shadow-lg rounded-md"
-          onClick={() => handleClose()}
-        >
-          Cancel
-        </button>
-        <button
-          className={` ml-2  text-[white] font-[1rem] shadow-lg rounded-md py-1 px-4 ${checkedItem===0?'bg-gray-400 ':' bg-customGreen'}`}
-          onClick={() => addCheckedItemToCart()}
-          disabled ={checkedItem===0}
-        >
-          Add
-        </button>
+          <button
+            className="py-1 px-4 border-[1px] border-black/70 text-black font-[1rem] shadow-lg rounded-md"
+            onClick={() => handleClose()}
+          >
+            Cancel
+          </button>
+          <button
+            className={` ml-2  text-[white] font-[1rem] shadow-lg rounded-md py-1 px-4 ${
+              checkedItem === 0 ? "bg-gray-400 " : " bg-customGreen"
+            }`}
+            onClick={() => addCheckedItemToCart()}
+            disabled={checkedItem === 0}
+          >
+            Add
+          </button>
         </div>
-       
       </div>
     </div>
   );
