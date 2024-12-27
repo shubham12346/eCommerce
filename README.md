@@ -1,6 +1,13 @@
 # netlify deployed url 
 https://ecommerceassgn.netlify.app/
 
+![image](https://github.com/user-attachments/assets/4c21ce1c-0d57-4898-aba9-9a90fc5b8c82)
+![image](https://github.com/user-attachments/assets/13eb927f-3867-4de0-bf2d-2236947943b8)
+![image](https://github.com/user-attachments/assets/3d7b5034-80ce-49c6-b0a1-7d183c4893d8)
+
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
