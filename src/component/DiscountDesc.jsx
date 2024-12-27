@@ -14,6 +14,10 @@ const DiscountDesc = () => {
       [checkBoxNum]: !checkboxes[checkBoxNum],
     });
   };
+
+  /**
+   * I don't know if need this also so i didn't connect its states to parent component
+   */
   return (
     <div className="flex flex-col pl-10">
       <div className="py-4 ">

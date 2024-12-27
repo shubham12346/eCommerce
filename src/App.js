@@ -17,6 +17,10 @@ import {
 import { arrayMove } from "@dnd-kit/sortable";
 import Footer from "./component/Footer";
 
+/**
+ *
+ * using atomic design structure for the project
+ */
 const App = () => {
   const [products, setProducts] = useState([]);
   const [modalId, setModalId] = useState(false);
@@ -144,7 +148,11 @@ const App = () => {
   };
   const handleUpdateProductList = (product) => {
     setLoader(true);
-
+    /**
+     * I have some question suppose user selects multiple products from search list
+     * i am confuse here what to should be done , for now i am taking only the first product user selected to display and
+     * remaining will be there there variant won't show only if the first selected product has it will show
+     */
     const updateObjectInArray = products.map((item) => {
       if (item.id === modalId) {
         return {
