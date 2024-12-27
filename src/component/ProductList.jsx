@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import {
   SortableContext,
   verticalListSortingStrategy,

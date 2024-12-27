@@ -67,11 +67,7 @@ const CheckboxElement = ({
         />
         {Source ? (
           <div className="p-2">
-            <img
-              src={Source}
-              alt="product image"
-              className="h-8 w-8 mr-3 mx-1 "
-            />
+            <img src={Source} className="h-8 w-8 mr-3 mx-1 " />
           </div>
         ) : (
           <div className="p-2 bg-gray-300 m-2">

@@ -219,7 +219,7 @@ const App = () => {
               handleDiscount={handleDiscount}
             />
             <div className="flex justify-end ">
-              {products?.length == 4 ? null : (
+              {products?.length === 4 ? null : (
                 <AddProductButton
                   onAdd={handleAddProduct}
                   btnText={"Add Product"}
