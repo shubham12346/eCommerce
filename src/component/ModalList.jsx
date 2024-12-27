@@ -10,7 +10,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import { useSelector, useDispatch } from "react-redux";
 import { addSearchItemsToList, setProducts } from "../services/searchService";
 
-const ModalList = ({ handleClose, handleUpdateProductList }) => {
+const ModalList = ({ handleClose, handleUpdateProductList, productLoader }) => {
   const [productList, setProductList] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -51,8 +51,9 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
         setProductList(cached);
       } else {
         if (!noNextData) {
+          setIsFetchingMore(true);
           const res = await fetchProducts(keyword, 10, page);
-          if (!res) {
+          if (res == null) {
             setNoNextData(true);
           }
           const refactoredRes = addCheckedKeyInTHeResponseList(res);
@@ -83,7 +84,6 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
       !isFetchingMore &&
       !loading
     ) {
-      setIsFetchingMore(true);
       setPage((prev) => prev + 1); // Fetch next page
     }
   };
@@ -158,7 +158,7 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
     setCheckedItem(0);
   };
   return (
-    <div className="w-[100%] relative h-[70vh] py-2 rounded-lg flex flex-col">
+    <div className="w-[100%] relative max-h-[70vh] py-2 rounded-lg flex flex-col">
       <div className="flex justify-between border-b-[1px] border-black/9 py-2 px-4">
         <h2 className="text-[1rem] font-[600] pb-4 ">Add products</h2>
         <CloseIcon onClick={handleClose} className="cursor-pointer" />
@@ -192,7 +192,7 @@ const ModalList = ({ handleClose, handleUpdateProductList }) => {
         className="flex-1 overflow-auto  mb-[4rem]    scrollbar-thumb-slate-400  scrollbar-track-transparent no-scroll-arrows  scrollbar-track-head"
         onScroll={handleScroll}
       >
-        {loading ? (
+        {loading || productLoader ? (
           <div className="my-10 flex items-center justify-center">
             <CircularProgress />
           </div>

@@ -15,7 +15,7 @@ const Variant = ({ variant, index, onRemove, productId }) => {
 
   return (
     <div
-      className="flex my-1 pl-12 justify-center items-center"
+      className="flex my-3 pl-12 justify-center items-center"
       ref={setNodeRef}
       style={style}
       {...attributes}
@@ -27,7 +27,7 @@ const Variant = ({ variant, index, onRemove, productId }) => {
         <div className="">{`${index}`}.</div>
       </div>
       <div className="border-2 border-black/8 px-3 flex rounded-3xl">
-        <div className="lg:min-w-[25rem] xl:w-[18rem] flex items-center py-1 ">
+        <div className="lg:min-w-[25rem] xl:w-[18rem] flex items-center py-2 ">
           <h3 className="text-sm px-1">{variant?.title}</h3>
         </div>
       </div>

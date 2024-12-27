@@ -20,6 +20,7 @@ import Footer from "./component/Footer";
 const App = () => {
   const [products, setProducts] = useState([]);
   const [modalId, setModalId] = useState(false);
+  const [productLoader, setLoader] = useState(false);
 
   const handleAddProduct = () => {
     if (products?.length < 5) {
@@ -138,9 +139,12 @@ const App = () => {
     setModalId(productId);
   };
   const handleClose = () => {
-    setModalId("");
+    setLoader(true);
+    handleProductLoader();
   };
   const handleUpdateProductList = (product) => {
+    setLoader(true);
+
     const updateObjectInArray = products.map((item) => {
       if (item.id === modalId) {
         return {
@@ -155,6 +159,7 @@ const App = () => {
       return item;
     });
     setProducts(updateObjectInArray);
+    handleProductLoader();
   };
 
   const handleDiscount = (productId, type, value) => {
@@ -185,6 +190,13 @@ const App = () => {
       return item;
     });
     setProducts(newProducts);
+  };
+
+  const handleProductLoader = () => {
+    setTimeout(() => {
+      setLoader(false);
+      setModalId("");
+    }, 1000);
   };
 
   return (
@@ -221,6 +233,7 @@ const App = () => {
           <ModalList
             handleClose={handleClose}
             handleUpdateProductList={handleUpdateProductList}
+            productLoader={productLoader}
           />
         </BasicModal>
       </div>
