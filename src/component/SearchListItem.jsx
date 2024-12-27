@@ -11,7 +11,6 @@ const SearchListItem = ({
   product,
   handleOnChange,
 }) => {
-  console.log("pro source", src);
   return (
     <div className=" w-[100%] border-b-2  border-gray-500 overflow-y-auto overflow-x-hidden">
       <CheckboxElement
