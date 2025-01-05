@@ -1,7 +1,7 @@
 export const fetchProducts = async (search, limit, page) => {
   try {
     const response = await fetch(
-      `https://stageapi.monkcommerce.app/task/products/search?search=${search}&page=${page}&limit=${limit}`,
+      `https://stageapi.monkcommerce.app/task/products/search?search=${search || ""}&page=${page}&limit=${limit}`,
       {
         method: "GET",
         headers: {

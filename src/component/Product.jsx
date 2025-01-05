@@ -41,7 +41,7 @@ const Product = ({
           <div className="pr-4">{`${index}`}.</div>
         </div>
         <div className="border-2 border-black/8 px-3 py-2 flex justify-center items-center shadow-sm">
-          <div className="lg:min-w-[12rem] xl:w-[19rem] w-full flex items-center">
+          <div className=" sm:min-w-[12rem] xl:w-[19rem] w-full flex items-center">
             <h3 className="text-sm px-1">{title}</h3>
           </div>
           <div

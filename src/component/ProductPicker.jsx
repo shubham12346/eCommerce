@@ -31,7 +31,7 @@ const ProductPicker = ({ onSelect, onClose }) => {
       <div>
         {products.map((product) => (
           <div key={product.id} onClick={() => onSelect(product)}>
-            <img src={product.image.src} alt={product.title} />
+            <img src={product.image.src} alt={product.title} loading="lazy" />
             <h4>{product.title}</h4>
           </div>
         ))}

@@ -70,6 +70,7 @@ const CheckboxElement = ({
               src={Source}
               className="h-8 w-8 mr-3 mx-1 "
               alt={`${price}-image`}
+              loading="lazy"
             />
           </div>
         ) : (

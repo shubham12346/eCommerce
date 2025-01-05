@@ -9,6 +9,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import InputAdornment from "@mui/material/InputAdornment";
 import { useSelector, useDispatch } from "react-redux";
 import { addSearchItemsToList, setProducts } from "../services/searchService";
+import { debounce } from "./utility";
 
 const ModalList = ({ handleClose, handleUpdateProductList, productLoader }) => {
   const [productList, setProductList] = useState([]);
@@ -23,57 +24,60 @@ const ModalList = ({ handleClose, handleUpdateProductList, productLoader }) => {
 
   const handleSearchList = (event) => {
     event.preventDefault();
-    setLoading(true);
-    const value = event.target.value;
-    setSearchKeyword(value);
+    setSearchKeyword(event.target.value);
     setPage(1);
     setNoNextData(false);
+    setProductList([]); // Clear previous results
   };
 
   useEffect(() => {
-    let timeout;
-    if (searchKeyword) {
-      timeout = setTimeout(() => {
-        fetchData(searchKeyword, page);
-      }, 1000);
+    if (!searchKeyword && page === 1) {
+      return;
     }
-    return () => clearTimeout(timeout);
+    let timer = setTimeout(() => {
+      fetchProductsData();
+    }, 1000);
+
+    return () => {
+      clearTimeout(timer);
+    };
   }, [searchKeyword, page]);
 
-  const fetchData = async (keyword, page) => {
-    if (page === 1) {
-      setLoading(true);
-    }
+  useEffect(() => {
+    setLoading(true);
+    fetchProductsData();
+  }, []);
+
+  const fetchProductsData = async () => {
+    if (isFetchingMore && loading) return;
     try {
-      const cached = SearchCached[keyword];
+      const cached = SearchCached[searchKeyword];
+
       if (page === 1 && cached) {
-        dispatch(setProducts(cached));
-        setProductList(cached);
+        setProductList(cached); // Load from cache for initial load
       } else {
         if (!noNextData) {
-          setIsFetchingMore(true);
-          const res = await fetchProducts(keyword, 10, page);
-          if (res == null) {
-            setNoNextData(true);
+          const res = await fetchProducts(searchKeyword, 10, page);
+
+          if (!res || res.length === 0) {
+            setNoNextData(true); // Mark no more data
+          } else {
+            const updatedData = addCheckedKeyInTHeResponseList(res);
+            setProductList((prev) =>
+              page === 1 ? updatedData : [...prev, ...updatedData]
+            );
+
+            // Cache new results
+            dispatch(setProducts(updatedData));
+            dispatch(addSearchItemsToList({ searchKeyword, res: updatedData }));
           }
-          const refactoredRes = addCheckedKeyInTHeResponseList(res);
-          setProductList((prev) =>
-            page === 1 ? refactoredRes : [...prev, ...refactoredRes]
-          );
-          dispatch(setProducts(refactoredRes));
-          dispatch(
-            addSearchItemsToList({
-              searchKeyword: keyword,
-              res: refactoredRes,
-            })
-          );
         }
       }
     } catch (err) {
-      console.error(err);
+      console.error("Error fetching data:", err);
     } finally {
       setLoading(false);
-      setIsFetchingMore(false);
+      setIsFetchingMore(false); // Unlock scroll calls
     }
   };
 
@@ -84,7 +88,8 @@ const ModalList = ({ handleClose, handleUpdateProductList, productLoader }) => {
       !isFetchingMore &&
       !loading
     ) {
-      setPage((prev) => prev + 1); // Fetch next page
+      setIsFetchingMore(true);
+      setPage((prev) => Number(prev) + 1); // Fetch next page
     }
   };
 
@@ -157,11 +162,16 @@ const ModalList = ({ handleClose, handleUpdateProductList, productLoader }) => {
     handleClose();
     setCheckedItem(0);
   };
+
+  const handlePageClose = () => {
+    handleClose();
+    setPage(1);
+  };
   return (
     <div className="w-[100%] relative max-h-[70vh] py-2 rounded-lg flex flex-col">
       <div className="flex justify-between border-b-[1px] border-black/9 py-2 px-4">
         <h2 className="text-[1rem] font-[600] pb-4 ">Add products</h2>
-        <CloseIcon onClick={handleClose} className="cursor-pointer" />
+        <CloseIcon onClick={handlePageClose} className="cursor-pointer" />
       </div>
 
       <div className="mt-2  px-4  pb-2 border-b-[1px] border-black/9 ">
@@ -229,7 +239,7 @@ const ModalList = ({ handleClose, handleUpdateProductList, productLoader }) => {
         <div>
           <button
             className="py-1 px-4 border-[1px] border-black/70 text-black font-[1rem] shadow-lg rounded-md"
-            onClick={() => handleClose()}
+            onClick={() => handlePageClose()}
           >
             Cancel
           </button>

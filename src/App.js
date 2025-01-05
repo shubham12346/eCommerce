@@ -143,8 +143,7 @@ const App = () => {
     setModalId(productId);
   };
   const handleClose = () => {
-    setLoader(true);
-    handleProductLoader();
+    setModalId("");
   };
   const handleUpdateProductList = (product) => {
     setLoader(true);
